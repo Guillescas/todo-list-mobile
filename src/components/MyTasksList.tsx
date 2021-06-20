@@ -1,13 +1,7 @@
 import React from 'react';
-import { FlatList, TouchableOpacity, View, Text, StyleSheet, FlatListProps } from 'react-native';
+import { FlatList, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
-function FlatListHeaderComponent() {
-  return (
-    <View>
-      <Text style={styles.header}>Minhas tasks</Text>
-    </View>
-  )
-}
+import { IColorsOfTheme } from '../pages/Home';
 
 interface MyTasksListProps {
   tasks: {
@@ -17,9 +11,23 @@ interface MyTasksListProps {
   }[];
   onPress: (id: number) => void;
   onLongPress: (id: number) => void;
+  colorsOfTheme: IColorsOfTheme;
 }
 
-export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
+export function MyTasksList({
+  tasks,
+  onLongPress,
+  onPress,
+  colorsOfTheme,
+}: MyTasksListProps) {
+  function FlatListHeaderComponent() {
+    return (
+      <View>
+        <Text style={[styles.header, { color: colorsOfTheme.colors.secondTitle }]}>Minhas tasks</Text>
+      </View>
+    )
+  }
+
   return (
     <FlatList
       data={tasks}
@@ -31,14 +39,30 @@ export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
             activeOpacity={0.7}
             onPress={() => onPress(item.id)}
             onLongPress={() => onLongPress(item.id)}
-            style={item.done ? styles.taskButtonDone : styles.taskButton}
+            style={[
+              item.done ?
+              [styles.taskButtonDone, { backgroundColor: colorsOfTheme.colors.smoothBackground }] : 
+              styles.taskButton,
+            ]}
           >
             <View 
               testID={`marker-${index}`}
-              style={item.done ? styles.taskMarkerDone : styles.taskMarker}
+              style={
+                item.done ?
+                [
+                  styles.taskMarkerDone,
+                  { backgroundColor: colorsOfTheme.colors.success }
+                ] : 
+                [
+                  styles.taskMarker,
+                ]
+              }
             />
             <Text 
-              style={item.done ? styles.taskTextDone : styles.taskText}
+              style={
+                item.done ? 
+                [styles.taskTextDone, { color: colorsOfTheme.colors.secondaryText }] : 
+                { color: colorsOfTheme.colors.secondTitle }}
             >
               {item.title}
             </Text>
@@ -59,7 +83,6 @@ export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
 
 const styles = StyleSheet.create({
   header: {
-    color: '#3D3D4D',
     fontSize: 24,
     fontFamily: 'Poppins-SemiBold'
   },
@@ -89,7 +112,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 4,
     borderRadius: 4,
-    backgroundColor: 'rgba(25, 61, 223, 0.1)',
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -101,7 +123,6 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   taskTextDone: {
-    color: '#A09CB1',
     textDecorationLine: 'line-through'
   }
 })
